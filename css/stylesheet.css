@@ -1,0 +1,9 @@
+.listItem:hover {
+    text-decoration: line-through;
+    text-decoration-color: grey;
+}
+
+.finished-item {
+    text-decoration: line-through;
+    /* Add any other styles for finished items */
+}
