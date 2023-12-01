@@ -1,56 +1,54 @@
-let toDoInput = document.querySelector("#toDoInput");
-let toDoForm = document.querySelector("#toDoForm");
-let toDoListDiv = document.querySelector("#toDoListDiv");
-let clearButton = document.querySelector("#clearButton");
-let i = 0;
+// Selectors
+const toDoInput = document.querySelector("#toDoInput");
+const toDoForm = document.querySelector("#toDoForm");
+const toDoListDiv = document.querySelector("#toDoListDiv");
+const clearButton = document.querySelector("#clearButton");
 
-window.onload = initList();
+// Counter for localStorage keys
+let keyCounter = 0;
 
+// Event listener for page load
+window.onload = initList;
+
+// Initialize the to-do list on page load
 function initList() {
-   let maxKey = 0;
+   keyCounter = getMaxKey() + 1;
 
-   for (const key of Object.keys(window.localStorage)) {
-      const keyNumber = parseInt(key);
-      if (!isNaN(keyNumber) && keyNumber > maxKey) {
-         maxKey = keyNumber;
-      }
-   }
-
-   i = maxKey + 1;
-
-   for (const key of Object.keys(window.localStorage)) {
-      const value = window.localStorage.getItem(key);
+   for (const key of Object.keys(localStorage)) {
+      const value = localStorage.getItem(key);
       addToList(value);
    }
 }
 
+// Event listener for form submission
 toDoForm.addEventListener("submit", function (event) {
    event.preventDefault();
    addToList();
 });
 
-// Using event delegation to handle click events on dynamically added list items
+// Event listener for click events on list items
 toDoListDiv.addEventListener("click", function (event) {
    if (event.target.classList.contains("listItem")) {
       event.target.classList.toggle("finished-item");
    }
 });
 
+// Event listener for clear button
 clearButton.addEventListener("click", function () {
    clearLocalStorage();
-   // Optionally, you can also clear the displayed list on the page
-   //clearToDoList();
 });
 
-
+// Function to add item to the to-do list
 function addToList(storageData) {
-   if (!toDoInput.value && !storageData) {
-      return; // Don't add empty items to the list or storage
+   const inputValue = toDoInput.value.trim();
+
+   if (!inputValue && !storageData) {
+      return; // Skip empty items
    }
 
-   let newListItem = document.createElement("h5");
-   newListItem.innerText = storageData || toDoInput.value;
-   newListItem.classList.add("listItem"); // Add your custom class
+   const newListItem = document.createElement("h5");
+   newListItem.innerText = storageData || inputValue;
+   newListItem.classList.add("listItem");
 
    toDoListDiv.appendChild(newListItem);
 
@@ -61,26 +59,34 @@ function addToList(storageData) {
    toDoInput.value = "";
 }
 
+// Function to add item to localStorage
 function addToStorage(value) {
-   const currentKey = i;
-   i++;
+   const currentKey = keyCounter++;
+   localStorage.setItem(currentKey, JSON.stringify(value));
 
-   window.localStorage.setItem(currentKey, JSON.stringify(value));
-
-   const storageItem = JSON.parse(window.localStorage.getItem(currentKey));
-   console.log(storageItem);
-
-   const localStorageData = JSON.stringify(window.localStorage);
-   console.log(localStorageData);
+   console.log("Added to localStorage:", value);
+   console.log("Current localStorage data:", localStorage);
 }
 
+// Function to clear localStorage and reset counter
 function clearLocalStorage() {
-   window.localStorage.clear();
-   // Reset the counter to 0 after clearing storage
-   i = 0;
+   localStorage.clear();
+   keyCounter = 0;
+
+   console.log("LocalStorage cleared.");
+   console.log("Current localStorage data:", localStorage);
 }
 
-function clearToDoList() {
-   // Clear the displayed list on the page
-   toDoListDiv.innerHTML = "";
+// Function to get the maximum key in localStorage
+function getMaxKey() {
+   let maxKey = 0;
+
+   for (const key of Object.keys(localStorage)) {
+      const keyNumber = parseInt(key);
+      if (!isNaN(keyNumber) && keyNumber > maxKey) {
+         maxKey = keyNumber;
+      }
+   }
+
+   return maxKey;
 }
