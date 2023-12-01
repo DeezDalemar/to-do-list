@@ -1,6 +1,7 @@
 let toDoInput = document.querySelector("#toDoInput");
 let toDoForm = document.querySelector("#toDoForm");
 let toDoListDiv = document.querySelector("#toDoListDiv");
+let i = 0;
 
 toDoForm.addEventListener("submit", function (event) {
    event.preventDefault();
@@ -20,5 +21,23 @@ function addToList() {
    newListItem.classList.add("listItem"); // Add your custom class
 
    toDoListDiv.appendChild(newListItem);
+
+   addToStorage(toDoInput.value);
+
    toDoInput.value = " ";
+
+   
+}
+
+
+function addToStorage(value) {
+   window.localStorage.setItem(i, JSON.stringify(value))
+
+   const storageItem = JSON.parse(window.localStorage.getItem(i))
+   console.log(storageItem);
+
+   const localStorageData = JSON.stringify(window.localStorage);
+   console.log(localStorageData);
+
+   i++
 }
