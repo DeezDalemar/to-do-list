@@ -31,6 +31,8 @@ toDoListDiv.addEventListener("click", function (event) {
    if (event.target.classList.contains("listItem")) {
       event.target.classList.toggle("finished-item");
    }
+
+   //Craig recommendation, attach event handler to h5
 });
 
 // Event listener for clear button
